@@ -2,7 +2,7 @@
 # ws-init.sh — In-place workspace initialization (ws init) and env hydration (ws env)
 
 WS_REGISTRY="$WS_SYSTEM/registry.jsonl"
-WS_OP_VAULT="agent-harness"
+WS_OP_VAULT="$(ws_config_value onepassword vault "tiger-os")"
 
 # --- ws init ---
 
@@ -25,7 +25,7 @@ ws_init() {
   name=$(basename "$project_dir")
   local today
   today=$(date +%Y-%m-%d)
-  local base_dir="$WS_SYSTEM/templates/_base"
+  local base_dir="$WS_SYSTEM/templates/default"
 
   # Guard: already initialized
   if [[ -f "$project_dir/.workspace.yaml" && "$force" != true ]]; then
@@ -109,7 +109,7 @@ $knowledge_section"
   # 5. .claude/settings.json + .claude/commands/
   _ws_scaffold_claude_dir "$project_dir" "$force"
 
-  # 6. .env.template + .env (dynamic from 1Password agent-harness vault)
+  # 6. .env.template + .env (dynamic from 1Password vault)
   if [[ ! -f "$project_dir/.env.template" || "$force" == true ]]; then
     _ws_generate_env_template "$project_dir"
   else
@@ -134,11 +134,6 @@ $knowledge_section"
   # 8. Template overlay (directories + files)
   if [[ -n "$template" ]]; then
     _ws_apply_template_dirs "$project_dir" "$template"
-    # Copy template files/ if present
-    if [[ -d "$WS_SYSTEM/templates/$template/files" ]]; then
-      cp -Rn "$WS_SYSTEM/templates/$template/files/." "$project_dir/" 2>/dev/null || true
-      echo "  [+] template files copied"
-    fi
   fi
 
   # 9. Register
@@ -254,7 +249,7 @@ _ws_generate_env_template() {
     return 0
   }
 
-  # Query agent-harness vault for all items
+  # Query configured vault for all items
   local items_json
   items_json=$(op item list --vault "$WS_OP_VAULT" --format=json 2>/dev/null) || {
     echo "  [!] Could not query 1Password vault '$WS_OP_VAULT' — skipping .env generation"
@@ -298,7 +293,7 @@ _ws_generate_env_template() {
 
 _ws_scaffold_claude_dir() {
   local project_dir="$1" force="$2"
-  local base_dir="$WS_SYSTEM/templates/_base"
+  local base_dir="$WS_SYSTEM/templates/default"
 
   # .claude/settings.json
   mkdir -p "$project_dir/.claude"
@@ -380,30 +375,10 @@ _ws_register() {
 _ws_apply_template_dirs() {
   local project_dir="$1" template="$2"
 
-  case "$template" in
-    theme-research)
-      mkdir -p "$project_dir"/{research,data,output}
-      ;;
-    deal-war-room)
-      mkdir -p "$project_dir"/diligence/{team,market,product,financials}
-      mkdir -p "$project_dir"/{materials,notes}
-      ;;
-    research)
-      mkdir -p "$project_dir"/{research,data,output}
-      ;;
-    agent-dev)
-      mkdir -p "$project_dir"/{src,tests}
-      mkdir -p "$project_dir/.claude/skills"
-      ;;
-    agentic-email)
-      mkdir -p "$project_dir"/voice/samples
-      mkdir -p "$project_dir"/{drafts,triage}
-      mkdir -p "$project_dir/.claude/skills/triage"
-      ;;
-    canvas)
-      mkdir -p "$project_dir"/{src,server,bin}
-      ;;
-  esac
+  # Copy template files/ if present
+  if [[ -d "$WS_SYSTEM/templates/$template/files" ]]; then
+    cp -Rn "$WS_SYSTEM/templates/$template/files/." "$project_dir/" 2>/dev/null || true
+  fi
 
   # Add .gitkeep to empty dirs
   find "$project_dir" -type d -empty \

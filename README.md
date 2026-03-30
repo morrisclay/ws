@@ -46,29 +46,30 @@ ws worktree <name> <branch>         Create git worktree (lockf-protected)
 ws ingest <name>                    Fetch Linear data + web research
 ```
 
-## Templates
+## Configuration
 
-| Template | Use case |
-|---|---|
-| `research` | General research |
-| `theme-research` | VC theme deep-dives |
-| `deal-war-room` | Company due diligence |
-| `agent-dev` | AI agent development |
-| `agentic-email` | AI-assisted email via Superhuman |
-| `canvas` | Claude Code + TLDraw whiteboard |
+Edit `config.toml` (at `~/AI/.workspace/config.toml`) to configure ws:
 
-```bash
-ws init --template=agent-dev
-ws new climate-tech --template=theme-research
+```toml
+[onepassword]
+vault = "your-vault-name"
 ```
 
-## Secrets
-
-`ws init` queries your 1Password `agent-harness` vault, generates `.env.template` with `op://` references for every item, and injects `.env` automatically. To refresh after adding new secrets:
+`ws env --inject` queries all items in the configured vault, generates `.env.template` with `op://` references, and injects `.env` automatically. To refresh after adding new secrets:
 
 ```bash
 ws env --inject
 ```
+
+## Templates
+
+ws ships with a `default` template. You can add custom templates under `templates/` — each template is a directory containing any of:
+
+- `CLAUDE.md` — agent context (interpolates `{{name}}` and `{{date}}`)
+- `workspace.yaml` — workspace config
+- `manifest.toml` — Flox manifest
+- `gitignore` — gitignore entries
+- `files/` — directory tree copied into the workspace
 
 ## Structure
 
@@ -76,7 +77,8 @@ ws env --inject
 .workspace/
   bin/ws              CLI entry point (symlinked to ~/.local/bin/ws)
   lib/                Core libraries (init, scaffold, launch, manage, journal)
-  templates/          Workspace templates (_base + named templates)
+  templates/          Workspace templates (default + custom)
   hooks/              Lifecycle hooks (pre/post scaffold, launch, stop)
   plugins/            Extensions (Linear ingest)
+  config.toml         User configuration (1Password vault, etc.)
 ```

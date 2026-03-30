@@ -17,7 +17,7 @@ ws_help() {
     ws <name>                           Launch (or focus) a workspace
     ws new <name> [--template=<type>]   Scaffold a new project
     ws init [--template=<type>]         Initialize current dir as workspace
-    ws env [--inject]                   Sync .env from 1Password (agent-harness vault)
+    ws env [--inject]                   Sync .env from 1Password
     ws list                             List all projects
     ws stop <name>                      Close a workspace
     ws delete <name> [--force]          Delete a workspace permanently
@@ -26,14 +26,14 @@ ws_help() {
     ws ingest <name> [--linear-only]   Fetch Linear data / guide to full ingest
     ws worktree <name> <branch>         Create git worktree
 
-  Templates:
-    research         General-purpose research workspace
-    theme-research   VC theme deep-dive
-    deal-war-room    Company due diligence
-    agent-dev        AI agent development
+  Configuration:
+    Edit ~/.workspace/config.toml (or ~/AI/.workspace/config.toml):
+
+      [onepassword]
+      vault = "your-vault-name"
 
   Examples:
-    ws new climate-tech --template=theme-research
+    ws new climate-tech
     ws climate-tech
     ws list
     ws stop climate-tech

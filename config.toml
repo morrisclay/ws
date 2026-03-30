@@ -1,0 +1,6 @@
+# ws configuration
+# Copy this file to ~/AI/.workspace/config.toml and edit to match your setup.
+
+[onepassword]
+# The 1Password vault to pull secrets from when running `ws env --inject`
+vault = "tiger-os"

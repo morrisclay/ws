@@ -10,6 +10,35 @@ ws_die() {
   exit 1
 }
 
+ws_config_value() {
+  local section="$1" key="$2" default="${3:-}"
+  local config_file="$WS_SYSTEM/config.toml"
+  if [[ ! -f "$config_file" ]]; then
+    echo "$default"
+    return
+  fi
+  # Minimal TOML reader: find [section] then key = "value"
+  local in_section=false
+  while IFS= read -r line; do
+    # Strip comments and whitespace
+    line="${line%%#*}"
+    [[ -z "${line// }" ]] && continue
+    if [[ "$line" =~ ^\[([a-zA-Z_-]+)\] ]]; then
+      if [[ "${BASH_REMATCH[1]}" == "$section" ]]; then
+        in_section=true
+      else
+        $in_section && break
+      fi
+      continue
+    fi
+    if $in_section && [[ "$line" =~ ^[[:space:]]*${key}[[:space:]]*=[[:space:]]*\"?([^\"]*)\"? ]]; then
+      echo "${BASH_REMATCH[1]}"
+      return
+    fi
+  done < "$config_file"
+  echo "$default"
+}
+
 ws_require_cmux() {
   if ! "$CMUX" ping >/dev/null 2>&1; then
     ws_die "cmux is not running. Open cmux.app first."
@@ -61,7 +90,7 @@ ws_clear_progress() {
 }
 
 ws_available_templates() {
-  ls -1 "$WS_SYSTEM/templates/" 2>/dev/null | grep -v '^_' | tr '\n' ', ' | sed 's/,$//'
+  ls -1 "$WS_SYSTEM/templates/" 2>/dev/null | tr '\n' ', ' | sed 's/,$//'
 }
 
 ws_resolve_project_dir() {

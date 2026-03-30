@@ -4,7 +4,7 @@
 source "$WS_SYSTEM/hooks/run-hooks.sh"
 
 ws_new() {
-  local name="" template="research"
+  local name="" template="default"
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -74,32 +74,7 @@ ws_new() {
     echo "  [+] template files copied"
   fi
 
-  # 6. Create template-specific directories (ensure structure)
-  case "$template" in
-    theme-research)
-      mkdir -p "$project_dir"/{research,data,output}
-      ;;
-    deal-war-room)
-      mkdir -p "$project_dir"/diligence/{team,market,product,financials}
-      mkdir -p "$project_dir"/{materials,notes}
-      ;;
-    research)
-      mkdir -p "$project_dir"/{research,data,output}
-      ;;
-    agent-dev)
-      mkdir -p "$project_dir"/{src,tests}
-      mkdir -p "$project_dir/.claude/skills"
-      ;;
-    agentic-email)
-      mkdir -p "$project_dir"/voice/samples
-      mkdir -p "$project_dir"/{drafts,triage}
-      mkdir -p "$project_dir/.claude/skills/triage"
-      ;;
-    canvas)
-      mkdir -p "$project_dir"/{src,server,bin}
-      ;;
-  esac
-  # Add .gitkeep to empty dirs
+  # 6. Add .gitkeep to empty dirs
   find "$project_dir" -type d -empty -not -path '*/.git/*' -not -path '*/.flox/*' \
     -exec touch {}/.gitkeep \;
   echo "  [+] directories created"
