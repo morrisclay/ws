@@ -1,0 +1,36 @@
+name: "{{name}}"
+template: "agentic-email"
+created: "{{date}}"
+
+layout:
+  panes:
+    - name: "main"
+      direction: null
+      surfaces:
+        - name: "claude"
+          type: terminal
+          command: "claude --dangerously-skip-permissions"
+          activate_flox: true
+        - name: "shell"
+          type: terminal
+          activate_flox: true
+
+    - name: "mail"
+      direction: "right"
+      split_from: "main"
+      surfaces:
+        - name: "superhuman"
+          type: browser
+          url: "https://mail.superhuman.com/"
+
+bookmarks:
+  - name: "Superhuman"
+    url: "https://mail.superhuman.com/"
+  - name: "Superhuman Calendar"
+    url: "https://calendar.superhuman.com/"
+
+status:
+  - key: "type"
+    value: "agentic-email"
+    icon: "envelope.fill"
+    color: "#6366F1"

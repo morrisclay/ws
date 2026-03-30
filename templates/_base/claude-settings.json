@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat .journal.jsonl)",
+      "Bash(tail:*)",
+      "Bash(wc -l .journal.jsonl)",
+      "Bash(printf:*)",
+      "Bash(git log:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git worktree:*)",
+      "Bash(env | grep:*)",
+      "Bash(ws env:*)",
+      "Bash(ws list:*)",
+      "Bash(ws journal:*)",
+      "Bash(flox activate:*)",
+      "Bash(op item list:*)",
+      "Bash(jq:*)",
+      "Bash(date:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)"
+    ]
+  }
+}

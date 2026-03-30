@@ -1,0 +1,52 @@
+name: "{{name}}"
+template: "canvas"
+created: "{{date}}"
+
+layout:
+  panes:
+    - name: "main"
+      direction: null
+      surfaces:
+        - name: "claude"
+          type: terminal
+          command: "claude --dangerously-skip-permissions"
+          activate_flox: true
+        - name: "shell"
+          type: terminal
+          activate_flox: true
+
+    - name: "canvas"
+      direction: "right"
+      split_from: "main"
+      surfaces:
+        - name: "tldraw"
+          type: browser
+          url: "http://localhost:5173"
+
+    - name: "server"
+      direction: "down"
+      split_from: "canvas"
+      surfaces:
+        - name: "dev"
+          type: terminal
+          command: "npm run dev"
+          activate_flox: true
+
+services:
+  - name: "tldraw"
+    port: 5173
+    timeout: 30
+    url: "http://localhost:5173"
+  - name: "bridge"
+    port: 3100
+    timeout: 30
+
+status:
+  - key: "type"
+    value: "canvas"
+    icon: "pencil.and.outline"
+    color: "#3B82F6"
+  - key: "bridge"
+    value: ":3100"
+    icon: "link"
+    color: "#8B5CF6"

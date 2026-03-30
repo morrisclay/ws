@@ -1,0 +1,8 @@
+{
+  "name": "ws-ingest",
+  "description": "Auto-ingest data into AI workspaces. Pulls Linear project data (issues, documents, updates) and runs deep web research to build a comprehensive starting dataset. Optimized for deal-war-room and theme-research workspaces.",
+  "version": "0.2.0",
+  "author": {
+    "name": "Morris Clay"
+  }
+}

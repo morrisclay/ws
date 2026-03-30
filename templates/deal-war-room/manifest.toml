@@ -1,0 +1,42 @@
+version = 1
+
+[install]
+git.pkg-path = "git"
+curl.pkg-path = "curl"
+jq.pkg-path = "jq"
+ripgrep.pkg-path = "ripgrep"
+wget.pkg-path = "wget"
+
+[vars]
+PROJECT_TYPE = "deal-war-room"
+
+[hook]
+on-activate = '''
+  if [ -f "$FLOX_ENV_PROJECT/.env" ]; then
+    set -a; source "$FLOX_ENV_PROJECT/.env"; set +a
+  fi
+
+  mkdir -p "$FLOX_ENV_PROJECT/diligence/team"
+  mkdir -p "$FLOX_ENV_PROJECT/diligence/market"
+  mkdir -p "$FLOX_ENV_PROJECT/diligence/product"
+  mkdir -p "$FLOX_ENV_PROJECT/diligence/financials"
+  mkdir -p "$FLOX_ENV_PROJECT/materials"
+  mkdir -p "$FLOX_ENV_PROJECT/notes"
+
+  export PROJECT_HOME="$FLOX_ENV_PROJECT"
+
+  printf "\n  deal war room  %s\n\n" "$(basename "$FLOX_ENV_PROJECT")"
+  printf "  diligence/     Due diligence workstreams\n"
+  printf "  materials/     Pitch decks, financials, docs\n"
+  printf "  notes/         Meeting notes, call logs\n\n"
+'''
+
+[profile]
+common = '''
+  alias dd="ls -1 $FLOX_ENV_PROJECT/diligence/"
+  alias notes="ls -1 $FLOX_ENV_PROJECT/notes/"
+  alias materials="ls -1 $FLOX_ENV_PROJECT/materials/"
+'''
+
+[options]
+systems = ["aarch64-darwin"]

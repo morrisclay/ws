@@ -1,0 +1,39 @@
+version = 1
+
+[install]
+git.pkg-path = "git"
+jq.pkg-path = "jq"
+ripgrep.pkg-path = "ripgrep"
+nodejs.pkg-path = "nodejs"
+
+[vars]
+PROJECT_TYPE = "canvas"
+CANVAS_BRIDGE_URL = "http://localhost:3100"
+
+[hook]
+on-activate = '''
+  if [ -f "$FLOX_ENV_PROJECT/.env" ]; then
+    set -a; source "$FLOX_ENV_PROJECT/.env"; set +a
+  fi
+
+  # Install dependencies if needed
+  if [ -f "$FLOX_ENV_PROJECT/package.json" ] && [ ! -d "$FLOX_ENV_PROJECT/node_modules" ]; then
+    echo "  Installing dependencies..."
+    (cd "$FLOX_ENV_PROJECT" && npm install --silent 2>/dev/null) || true
+  fi
+
+  export PROJECT_HOME="$FLOX_ENV_PROJECT"
+  export CANVAS_BRIDGE_URL="http://localhost:3100"
+  export PATH="$FLOX_ENV_PROJECT/bin:$PATH"
+
+  printf "\n  canvas  %s\n\n" "$(basename "$FLOX_ENV_PROJECT")"
+'''
+
+[profile]
+common = '''
+  alias dev="npm run dev"
+  alias build="npm run build"
+'''
+
+[options]
+systems = ["aarch64-darwin"]

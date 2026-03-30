@@ -1,0 +1,7 @@
+.env
+.workspace.lock
+.journal.jsonl
+.journal.*.jsonl
+.DS_Store
+node_modules/
+*.log

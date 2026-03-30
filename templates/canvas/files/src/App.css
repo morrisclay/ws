@@ -1,0 +1,36 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.canvas-root {
+  position: fixed;
+  inset: 0;
+}
+
+.bridge-indicator {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  z-index: 9999;
+  transition: background-color 0.3s;
+  pointer-events: none;
+}
+
+.bridge-indicator[data-state="connected"] {
+  background-color: #22c55e;
+}
+
+.bridge-indicator[data-state="connecting"] {
+  background-color: #eab308;
+}
+
+.bridge-indicator[data-state="disconnected"] {
+  background-color: #ef4444;
+}

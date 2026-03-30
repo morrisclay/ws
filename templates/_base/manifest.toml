@@ -1,0 +1,29 @@
+version = 1
+
+[install]
+git.pkg-path = "git"
+curl.pkg-path = "curl"
+jq.pkg-path = "jq"
+ripgrep.pkg-path = "ripgrep"
+
+[vars]
+PROJECT_TYPE = "standalone"
+
+[hook]
+on-activate = '''
+  if [ -f "$FLOX_ENV_PROJECT/.env" ]; then
+    set -a; source "$FLOX_ENV_PROJECT/.env"; set +a
+  fi
+
+  export PROJECT_HOME="$FLOX_ENV_PROJECT"
+
+  printf "\n  workspace  %s\n\n" "$(basename "$FLOX_ENV_PROJECT")"
+'''
+
+[profile]
+common = '''
+  alias ws-env="ws env --inject"
+'''
+
+[options]
+systems = ["aarch64-darwin"]

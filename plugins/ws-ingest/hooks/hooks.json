@@ -1,0 +1,14 @@
+{
+  "hooks": [
+    {
+      "event": "SessionStart",
+      "type": "command",
+      "command": "bash -c 'if [ -f .workspace.yaml ] && [ -d data ] && [ -z \"$(ls -A data/ 2>/dev/null | grep -v .gitkeep)\" ]; then echo \"This workspace has no data yet. Run /ws-ingest:ingest to auto-populate.\"; fi'"
+    },
+    {
+      "event": "SessionStart",
+      "type": "command",
+      "command": "bash -c 'if [ -f .workspace.yaml ]; then lpid=$(ruby -ryaml -e \"puts YAML.safe_load(File.read(%q(.workspace.yaml))).dig(%q(ingest),%q(linear_project_id)) rescue nil\" 2>/dev/null); if [ -n \"$lpid\" ] && [ -z \"${LINEAR_API_KEY:-}\" ]; then echo \"Linear project linked but LINEAR_API_KEY not set. Add it to .env\"; fi; fi'"
+    }
+  ]
+}

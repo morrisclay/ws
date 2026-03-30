@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WS_ROOT="$HOME/AI"
+WS_SYSTEM="$WS_ROOT/.workspace"
+
+# Source core library
+source "$WS_SYSTEM/lib/ws-core.sh"
+source "$WS_SYSTEM/lib/ws-yaml.sh"
+
+ws_help() {
+  cat <<'EOF'
+
+  ws — cmux workspace manager for ~/AI projects
+
+  Usage:
+    ws <name>                           Launch (or focus) a workspace
+    ws new <name> [--template=<type>]   Scaffold a new project
+    ws init [--template=<type>]         Initialize current dir as workspace
+    ws env [--inject]                   Sync .env from 1Password (agent-harness vault)
+    ws list                             List all projects
+    ws stop <name>                      Close a workspace
+    ws delete <name> [--force]          Delete a workspace permanently
+    ws edit <name>                      Edit .workspace.yaml
+    ws journal <name> [options]         View/add journal entries
+    ws ingest <name> [--linear-only]   Fetch Linear data / guide to full ingest
+    ws worktree <name> <branch>         Create git worktree
+
+  Templates:
+    research         General-purpose research workspace
+    theme-research   VC theme deep-dive
+    deal-war-room    Company due diligence
+    agent-dev        AI agent development
+
+  Examples:
+    ws new climate-tech --template=theme-research
+    ws climate-tech
+    ws list
+    ws stop climate-tech
+
+EOF
+}
+
+case "${1:-}" in
+  init)
+    shift
+    ws_require_deps
+    source "$WS_SYSTEM/lib/ws-init.sh"
+    ws_init "$@"
+    ;;
+  env)
+    shift
+    source "$WS_SYSTEM/lib/ws-init.sh"
+    ws_env "$@"
+    ;;
+  new)
+    shift
+    ws_require_deps
+    source "$WS_SYSTEM/lib/ws-scaffold.sh"
+    ws_new "$@"
+    ;;
+  list|ls)
+    ws_require_cmux
+    source "$WS_SYSTEM/lib/ws-manage.sh"
+    ws_list
+    ;;
+  stop|kill)
+    shift
+    ws_require_cmux
+    source "$WS_SYSTEM/lib/ws-manage.sh"
+    ws_stop "$@"
+    ;;
+  delete|rm)
+    shift
+    source "$WS_SYSTEM/lib/ws-manage.sh"
+    ws_delete "$@"
+    ;;
+  journal|j)
+    shift
+    source "$WS_SYSTEM/lib/ws-journal.sh"
+    ws_journal_cmd "$@"
+    ;;
+  ingest)
+    shift
+    source "$WS_SYSTEM/lib/ws-journal.sh"
+    source "$WS_SYSTEM/lib/ws-ingest.sh"
+    ws_ingest "$@"
+    ;;
+  edit)
+    shift
+    source "$WS_SYSTEM/lib/ws-manage.sh"
+    ws_edit "$@"
+    ;;
+  worktree|wt)
+    shift
+    source "$WS_SYSTEM/lib/ws-manage.sh"
+    ws_worktree "$@"
+    ;;
+  -h|--help|help)
+    ws_help
+    ;;
+  "")
+    ws_help
+    ;;
+  -*)
+    ws_die "Unknown flag: $1. Run 'ws help' for usage."
+    ;;
+  *)
+    # Default: launch workspace by name
+    ws_require_cmux
+    ws_require_deps
+    source "$WS_SYSTEM/lib/ws-launch.sh"
+    ws_launch "$1"
+    ;;
+esac

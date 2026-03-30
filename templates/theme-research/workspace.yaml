@@ -1,0 +1,53 @@
+name: "{{name}}"
+template: "theme-research"
+created: "{{date}}"
+
+ingest:
+  theme: "{{name}}"
+  description: ""
+  linear_project_id: ""
+  seed_companies: []
+  extra_queries: []
+
+layout:
+  panes:
+    - name: "main"
+      direction: null
+      surfaces:
+        - name: "claude"
+          type: terminal
+          command: "claude --dangerously-skip-permissions"
+          activate_flox: true
+        - name: "shell"
+          type: terminal
+          activate_flox: true
+
+    - name: "browser"
+      direction: "right"
+      split_from: "main"
+      surfaces:
+        - name: "web"
+          type: browser
+          url: "https://google.com"
+        - name: "arxiv"
+          type: browser
+          url: "https://arxiv.org"
+        - name: "scholar"
+          type: browser
+          url: "https://scholar.google.com"
+
+bookmarks:
+  - name: "Google Scholar"
+    url: "https://scholar.google.com"
+  - name: "Arxiv"
+    url: "https://arxiv.org"
+  - name: "Crunchbase"
+    url: "https://crunchbase.com"
+  - name: "PitchBook"
+    url: "https://pitchbook.com"
+
+status:
+  - key: "type"
+    value: "theme-research"
+    icon: "magnifyingglass"
+    color: "#8B5CF6"
